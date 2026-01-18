@@ -1,0 +1,53 @@
+REQUIREMENT ANALYSIS REPORT
+INTELLIGENT STEAM STATISTICS CHATBOT
+
+INTRODUCTION
+
+Online gaming platforms generate a large amount of user data such as owned games, playtime, achievements,
+and recent activity.Steam users often need to manually browse their profiles or use third-party websites 
+to analyze this data, which can be time-consuming and inconvenient.
+
+This project proposes an Intelligent Steam Statistics Chatbot that allows users to query their Steam 
+gaming statistics using simple text-based commands. The system retrieves player data using the Steam Web 
+API, detects user intent using Gemini’s API, and presents the requested statistics in a clear and user 
+friendly format.
+
+OBJECTIVES
+
+- Provide a chatbot-based interface for querying Steam user statistics
+- Automate the retrieval of gaming data using the Steam Web API
+- Implement a secure user login system
+- Store user-specific Steam IDs
+- Detect user intent using Gemini’s intent detection API
+- Execute tasks using rule-based logic
+- To present gaming statistics in a simple and readable format
+
+FUNCTIONAL REQUIREMENTS
+
+- Allow users to register using a username and password.
+- Allow users to log in and log out securely.
+- Store user credentials securely in the database.
+- Allow users to save their Steam user ID in their profile.
+- Allow users to enter text-based chatbot queries.
+- Detect user's intent using gemini's API.
+- Validate detected intents using rule-based logic.
+- Retrieve user statistics using the Steam Web API.
+- Process raw API data to generate summarized results.
+- Display Steam statistics in a user-friendly format.
+- Display appropriate error messages for invalid input or API failure.
+
+NON-FUNCTIONAL REQUIREMENTS
+
+- The system should respond within an acceptable time for user queries. 
+- The system should provide consistent results for identical queries.
+- The chatbot interface should be easy to use
+- User credentials must be stored securely (hashed passwords)
+- API keys must be protected from unauthorized access.
+- The rule-based intent handling logic should be modular in design so that new query 
+  types and tasks can be added in the future without modifying existing functionality.
+
+
+USERS OF THE SYSTEM
+
+Gamers: Steam users who want to view their gaming statistics
+External Users: user who would only explore the website
