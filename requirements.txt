@@ -51,3 +51,22 @@ USERS OF THE SYSTEM
 
 Gamers: Steam users who want to view their gaming statistics
 External Users: user who would only explore the website
+
+PROBABLE SYSTEM DESIGN
+
+The Intelligent Steam Statistics Chatbot would be built as a web-based system where users interact through a browser while all processing happens on a centralized server. The design follows a modular approach so that different components of the system can be developed, maintained, and upgraded independently.
+
+Frontend Design
+The user-facing part of the system would be a simple web application. Users would first see registration and login pages where they can create an account and sign in securely. After logging in, they would have access to a profile page where they can save or update their Steam ID. The main feature of the interface would be a chatbot-style text box where users can type natural language queries such as “Show my most played game” or “List my recently played games.” The responses from the system would appear in a clean, readable format, using simple text summaries or structured lists instead of raw data. Clear error messages would also be displayed if something goes wrong.
+
+Backend Design
+The backend would act as the core of the system and handle all processing. It would first manage user authentication, ensuring that passwords are stored securely using hashing techniques and that user sessions are properly maintained. When a user sends a chat message, the backend would forward the text to Gemini’s API to determine the user’s intent. Once the intent is identified, a rule-based module would validate it and decide what action needs to be performed. For example, if the intent is to fetch playtime statistics, the system would call the appropriate Steam Web API endpoint. The backend would then process the raw data returned by Steam, filter out unnecessary details, and generate a meaningful summary before sending it back to the chatbot interface.
+
+Database Design
+A relational database would be used to store user information securely. One table would store user credentials such as usernames and hashed passwords. Another table would link each user account to their saved Steam ID. Optionally, the system could also maintain a log of past chatbot queries for analysis or future improvements. Sensitive information like API keys would not be stored in the database but managed separately through secure environment variables.
+
+External APIs and Integration
+The system would rely on two main external services. The Steam Web API would provide access to gaming statistics such as owned games, playtime, achievements, and recent activity. Gemini’s API would be used to interpret user messages and detect their intent in natural language, reducing the need for rigid command formats.
+
+Overall Data Flow
+When a user submits a query, it is first sent to the backend. The backend forwards the message to Gemini for intent detection. After receiving the detected intent, the rule-based logic decides which Steam API call is required. The requested data is then retrieved, processed, summarized, and finally displayed to the user through the chatbot interface
