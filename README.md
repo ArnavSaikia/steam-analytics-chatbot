@@ -6,7 +6,7 @@ The **Intelligent Steam Statistics Chatbot** is a sophisticated integration of m
 
 ---
 
-### 🌐 Detailed System Architecture & Data Flow
+### Detailed System Architecture & Data Flow
 
 The system follows a **N-Tier Architecture**, separating the presentation layer from the logic and data layers to ensure maintainability and scalability.
 
@@ -18,7 +18,7 @@ The system follows a **N-Tier Architecture**, separating the presentation layer 
 
 ---
 
-### 🧩 Deep Dive: The Task Execution Framework
+### Deep Dive: The Task Execution Framework
 
 In Software Engineering, "Task Execution" is often the most critical part of a middleware application. In this project, it is handled via a **Command Pattern** logic.
 
@@ -30,7 +30,7 @@ In Software Engineering, "Task Execution" is often the most critical part of a m
 
 ---
 
-### 🔒 Security and Robustness Protocols
+### Security and Robustness Protocols
 
 A project involving personal user data and third-party APIs requires a rigorous security posture:
 
@@ -44,7 +44,7 @@ A project involving personal user data and third-party APIs requires a rigorous 
 
 ---
 
-### 📊 The Database Schema
+### The Database Schema
 
 The system relies on a relational database (SQLite/MySQL) to maintain the link between the web application's users and their Steam identities.
 
@@ -53,7 +53,7 @@ The system relies on a relational database (SQLite/MySQL) to maintain the link b
 
 ---
 
-### 📈 Future Research and Scaling
+### Future Research and Scaling
 
 To evolve this from a laboratory project to a production-grade tool, the following vectors are considered:
 
@@ -63,7 +63,7 @@ To evolve this from a laboratory project to a production-grade tool, the followi
 
 ---
 
-### 🧪 Practical Example of Logic Flow
+### Practical Example of Logic Flow
 
 **User Input:** *"Tell me if I've played CS:GO recently."*
 
@@ -75,3 +75,4 @@ To evolve this from a laboratory project to a production-grade tool, the followi
 
 
 4. **Response:** *"Yes! You last played Counter-Strike 2 yesterday for about 3 hours."*
+
