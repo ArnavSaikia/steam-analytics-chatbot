@@ -1,4 +1,4 @@
-## 🏛️ Comprehensive Project Specification: SteamStat AI
+##  🏛️ Comprehensive Project Specification: SteamStat AI
 
 **An Autonomous Data Retrieval System utilizing Generative Intent Classification**
 
@@ -75,4 +75,5 @@ To evolve this from a laboratory project to a production-grade tool, the followi
 
 
 4. **Response:** *"Yes! You last played Counter-Strike 2 yesterday for about 3 hours."*
+
 
