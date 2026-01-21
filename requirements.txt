@@ -70,3 +70,5 @@ The system would rely on two main external services. The Steam Web API would pro
 
 Overall Data Flow
 When a user submits a query, it is first sent to the backend. The backend forwards the message to Gemini for intent detection. After receiving the detected intent, the rule-based logic decides which Steam API call is required. The requested data is then retrieved, processed, summarized, and finally displayed to the user through the chatbot interface
+
+hii, harish was here
