@@ -66,7 +66,7 @@ Database Design
 A relational database would be used to store user information securely. One table would store user credentials such as usernames and hashed passwords. Another table would link each user account to their saved Steam ID. Optionally, the system could also maintain a log of past chatbot queries for analysis or future improvements. Sensitive information like API keys would not be stored in the database but managed separately through secure environment variables.
 
 External APIs and Integration
-The system would rely on two main external services. The Steam Web API would provide access to gaming statistics such as owned games, playtime, achievements, and recent activity. Gemini’s API would be used to interpret user messages and detect their intent in natural language, reducing the need for rigid command formats.
+The system would rely on two main external services. The Steam Web API would provide access to gaming statistics such as owned games, playtime, achievements, and recent activity. Gemini’s API would be used to interpret user messages and detect their intent in natural language, reducing the need for rigid command formats. Gemini API might be hard to use without hitting rate limits. Exploring local LLM models might be worth here
 
 Overall Data Flow
 When a user submits a query, it is first sent to the backend. The backend forwards the message to Gemini for intent detection. After receiving the detected intent, the rule-based logic decides which Steam API call is required. The requested data is then retrieved, processed, summarized, and finally displayed to the user through the chatbot interface
