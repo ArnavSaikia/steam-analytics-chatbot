@@ -71,4 +71,8 @@ The system would rely on two main external services. The Steam Web API would pro
 Overall Data Flow
 When a user submits a query, it is first sent to the backend. The backend forwards the message to Gemini for intent detection. After receiving the detected intent, the rule-based logic decides which Steam API call is required. The requested data is then retrieved, processed, summarized, and finally displayed to the user through the chatbot interface
 
-hii, harish was here
+What we want to achive all through this, is a efficient chatbot that can reflects the statistics of a player for a particular game.
+In the world of constant inclination of gaming tech gaints our contribution is crucial for developments of the players.
+We provide a service that works as a guide to players who wants hone their skill but lacks the czpital to hire professionals.
+The chatbot speaks things clearly so that, the player could actually improve his experience. This chatbot could be added to particular games, but this version is general one.
+
