@@ -1,0 +1,51 @@
+These diagrams represent the functional requirements of your project: using the Steam API to pull data, analyzing it, and providing coaching to the player.
+
+1. Guest User vs. Registered User
+
+The project distinguishes between two levels of access. This is a common design to encourage user retention (moving from Guest to Registered).
+
+Guest User (Limited Access)
+
+The "Guest User" diagram typically focuses on **discovery and basic utility**.
+
+* Actor: The "Guest User" (stick figure) is outside the system boundary.
+* Key Use Cases:
+* Search/View Player Stats: This likely involves the chatbot fetching public data from the **Steam API** without requiring the user to log in.
+* General Game Analysis: A basic overview of performance based on public match history.
+* Register/Sign Up: A critical path that allows the Guest to transition into a Registered User.
+
+
+
+Registered User (Full Access)
+
+The "Registered User" diagram shows the **core value proposition** of your project.
+
+* Actor: "Registered User" (often inherits capabilities from the Guest User).
+* Key Use Cases:
+* Login/Authentication: Ensuring the data is private and tied to a specific Steam ID.
+* Deep Game Analysis: Unlike the guest version, this might look at long-term trends, specific playstyles, or hidden metrics.
+* Personalized Coaching: This is where the AI takes the analyzed data and generates specific advice (e.g., "Your gold-per-minute is low in the mid-game; focus on farming these camps").
+* Progress Tracking: Viewing how their performance has improved over time thanks to the chatbot's lessons.
+
+
+
+
+2. Understanding the Relationships
+
+In these diagrams, you likely see arrows with specific labels. Here is what they mean in the context of your chatbot:
+
+| Relationship | Meaning in Your Project | Example |
+
+ <<include>> | Mandatory: The base action cannot happen without this step. | "Analyze Game" `<<include>>` "Fetch Data from Steam API." |
+ <<extend>> | Optional: An extra feature that only happens under certain conditions. | "View Stats" `<<extend>>` "Share to Social Media." |
+ **Association (Solid Line) | Represents the interaction between the user and the specific function. | A line from the "Player" to the "Ask for Coaching" bubble. |
+
+
+ 3. The Technical Flow (System Boundary)
+
+The large box in your diagrams represents the **System Boundary** (your Chatbot App). Everything inside the box is what your code does; everything outside is the "Actor" (the Human Player).
+
+1. Input: The user interacts with the Chatbot (Telegram, Discord, or Web UI).
+2. External Request: The Chatbot reaches out to the **Steam API** (represented as a "Secondary Actor" or a system outside the box).
+3. Processing: The "Analysis Engine" processes the JSON data from Steam.
+4. Output: The "Coaching Module" sends a message back to the user with actionable advice.
