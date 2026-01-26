@@ -38,13 +38,12 @@ FUNCTIONAL REQUIREMENTS
 
 NON-FUNCTIONAL REQUIREMENTS
 
-- The system should respond within an acceptable time for user queries. 
-- The system should provide consistent results for identical queries.
-- The chatbot interface should be easy to use
-- User credentials must be stored securely (hashed passwords)
-- API keys must be protected from unauthorized access.
-- The rule-based intent handling logic should be modular in design so that new query 
-  types and tasks can be added in the future without modifying existing functionality.
+- The system should respond to user queries within an acceptable timeframe to ensure a smooth and responsive user experience.
+- The system should provide consistent and reliable results when processing identical queries, ensuring data integrity and predictability.
+- The chatbot interface should be intuitive and user-friendly, allowing users to easily navigate and interact with the system without requiring extensive training or documentation.
+- User credentials must be stored securely using strong cryptographic hashing algorithms (such as bcrypt or Argon2) to protect against unauthorized access and data breaches.
+- API keys and sensitive authentication tokens must be protected from unauthorized access through secure storage mechanisms, such as environment variables or secure vaults, and should never be hardcoded in the application.
+- The rule-based intent handling logic should be designed with modularity in mind, allowing new query types and functional tasks to be added to the system in the future without requiring modifications to existing code or disrupting current functionality.
 
 
 USERS OF THE SYSTEM
