@@ -1,51 +1,185 @@
-These diagrams represent the functional requirements of your project: using the Steam API to pull data, analyzing it, and providing coaching to the player.
+These diagrams represent the functional requirements of the Intelligent Steam Statistics Chatbot. The system allows users to authenticate, query Steam statistics, generate charts and graphs, and receive rule-based game recommendations. The system retrieves data using the Steam Web API, detects user intent using Gemini API, and executes predefined tasks using modular rule-based logic.
 
 1. Guest User vs. Registered User
 
-The project distinguishes between two levels of access. This is a common design to encourage user retention (moving from Guest to Registered).
+The system distinguishes between two levels of access to ensure privacy, personalization, and controlled feature access.
 
 Guest User (Limited Access)
 
-The "Guest User" diagram typically focuses on **discovery and basic utility**.
+The Guest User diagram represents basic system access before authentication.
 
-* Actor: The "Guest User" (stick figure) is outside the system boundary.
-* Key Use Cases:
-* Search/View Player Stats: This likely involves the chatbot fetching public data from the **Steam API** without requiring the user to log in.
-* General Game Analysis: A basic overview of performance based on public match history.
-* Register/Sign Up: A critical path that allows the Guest to transition into a Registered User.
+Actor: Guest User (outside the system boundary).
 
+Purpose: Exploration and onboarding.
 
+Key Use Cases:
+
+View Supported Queries
+Allows guests to see what types of statistics and features the chatbot supports.
+
+View Sample Statistics
+Displays example charts or demo data without accessing personal Steam information.
+
+Register
+Allows a guest to create an account.
+
+Login
+Allows the guest to transition into a Registered User.
+
+Guest users do not access personal Steam statistics or recommendations.
 
 Registered User (Full Access)
 
-The "Registered User" diagram shows the **core value proposition** of your project.
+The Registered User diagram represents the core functionality of the system.
 
-* Actor: "Registered User" (often inherits capabilities from the Guest User).
-* Key Use Cases:
-* Login/Authentication: Ensuring the data is private and tied to a specific Steam ID.
-* Deep Game Analysis: Unlike the guest version, this might look at long-term trends, specific playstyles, or hidden metrics.
-* Personalized Coaching: This is where the AI takes the analyzed data and generates specific advice (e.g., "Your gold-per-minute is low in the mid-game; focus on farming these camps").
-* Progress Tracking: Viewing how their performance has improved over time thanks to the chatbot's lessons.
+Actor: Registered User (authenticated gamer).
 
+Purpose: Personalized statistics analysis and visualization.
 
+Key Use Cases:
 
+Login / Authentication
+Ensures secure and private access.
+
+Save / Update Steam ID
+Associates a Steam account with the user profile.
+
+Query Steam Statistics
+Allows users to ask questions such as:
+
+“How much have I played Elden Ring?”
+
+“Show my most played games.”
+
+“Show my total playtime.”
+
+View Steam Statistics
+Displays processed results based on Steam data.
+
+View Charts and Graphs
+Generates visualizations such as:
+
+Playtime distribution (bar chart)
+
+Game category breakdown (pie chart)
+
+Time spent trends
+
+Recommend Similar Games
+Suggests games based on:
+
+Most played genres
+
+Frequently played game categories
+
+Playtime patterns
+(Implemented using rule-based recommendation logic, not predictive AI.)
+
+Logout
+Ends the session securely.
 
 2. Understanding the Relationships
 
-In these diagrams, you likely see arrows with specific labels. Here is what they mean in the context of your chatbot:
+The diagrams include UML relationships that define how use cases interact.
 
-| Relationship | Meaning in Your Project | Example |
+<<include>> Relationship
 
- <<include>> | Mandatory: The base action cannot happen without this step. | "Analyze Game" `<<include>>` "Fetch Data from Steam API." |
- <<extend>> | Optional: An extra feature that only happens under certain conditions. | "View Stats" `<<extend>>` "Share to Social Media." |
- **Association (Solid Line) | Represents the interaction between the user and the specific function. | A line from the "Player" to the "Ask for Coaching" bubble. |
+Represents mandatory internal steps required for a use case to complete.
 
+Examples in this project:
 
- 3. The Technical Flow (System Boundary)
+"Query Steam Statistics" <<include>> "Detect User Intent"
 
-The large box in your diagrams represents the **System Boundary** (your Chatbot App). Everything inside the box is what your code does; everything outside is the "Actor" (the Human Player).
+"Query Steam Statistics" <<include>> "Fetch Steam Data"
 
-1. Input: The user interacts with the Chatbot (Telegram, Discord, or Web UI).
-2. External Request: The Chatbot reaches out to the **Steam API** (represented as a "Secondary Actor" or a system outside the box).
-3. Processing: The "Analysis Engine" processes the JSON data from Steam.
-4. Output: The "Coaching Module" sends a message back to the user with actionable advice.
+"View Charts and Graphs" <<include>> "Process Statistics Data"
+
+"Recommend Similar Games" <<include>> "Analyze Play Patterns"
+
+This means the main action cannot occur without these internal processes.
+
+Association Relationship (Solid Line)
+
+Represents interaction between an actor and a use case.
+
+Examples:
+
+Registered User — Query Steam Statistics
+
+Registered User — View Charts and Graphs
+
+Guest User — Register
+
+<<extend>> Relationship (Optional Use)
+
+Used only if an action optionally extends another.
+
+Example (if implemented):
+
+"View Steam Statistics" <<extend>> "Export Chart as Image"
+
+This means exporting is optional and only happens if the user chooses.
+
+3. System Boundary Explanation
+
+The large rectangle in the diagram represents the System Boundary, which defines the scope of the Intelligent Steam Statistics Chatbot.
+
+Everything inside the boundary is implemented by your application.
+Everything outside represents external actors.
+
+Important Clarification:
+External APIs such as Steam Web API and Gemini API are not actors in the use case diagram because they do not initiate interaction. They are external services used internally by the system.
+
+4. Technical Flow (Behavioral View)
+
+Input
+The Registered User interacts with the chatbot interface (Web UI).
+
+Intent Detection
+The system sends the user query to the Gemini API to classify intent.
+
+Rule-Based Validation
+The system validates the detected intent using modular rule-based logic.
+
+Data Retrieval
+The system fetches relevant data from the Steam Web API.
+
+Processing
+The system:
+
+Aggregates playtime
+
+Sorts games
+
+Computes statistics
+
+Generates chart data
+
+Applies recommendation rules
+
+Output
+The chatbot returns:
+
+Text-based statistics
+
+Charts and graphs
+
+Game recommendations
+
+5. Core Purpose of the Diagrams
+
+These use case diagrams demonstrate:
+
+Role-based access control (Guest vs Registered)
+
+Authentication handling
+
+Task execution automation
+
+Data visualization functionality
+
+Rule-based recommendation system
+
+Clear system scope and boundaries
+
+They capture the behavioral aspects of the software from the user’s perspective and define how different features are accessed and executed.
