@@ -1,0 +1,98 @@
+Here is a professionally formatted **`STEAM_API_GUIDE.md`** file. I have designed it to be clean, technical, and ready for a GitHub repository.
+
+Steam API Data Collection & Integration
+
+This document outlines the technical strategy for utilizing the Steam Web API to power the chatbot's game analysis and coaching features.
+
+Overview
+
+The chatbot functions by acting as a bridge between the **Steam Web API** and our **Analysis Engine**. It retrieves raw match data, parses performance metrics, and feeds them into the AI to generate personalized coaching feedback.
+
+Prerequisites
+
+* **Steam Web API Key:** Obtained via [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey).
+* **Library:** `requests` for Python or `axios` for Node.js.
+* **User Permission:** Players must set their "Privacy Settings" to **Public** and enable **"Expose Public Match Data"** in-game.
+
+API Endpoints & Usage
+
+1. Resolving User Identity
+
+To fetch data, we need the `SteamID64`. If a user provides a custom URL, we use the `ResolveVanityURL` interface.
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `ISteamUser/ResolveVanityURL/v0001/` | Converts a custom profile name to a SteamID64. |
+| `GET` | `ISteamUser/GetPlayerSummaries/v0002/` | Retrieves basic profile info (Name, Avatar). |
+
+2. Fetching Match History
+
+This is the primary data source for the "Guest User" and "Registered User" analysis.
+
+* **Interface:** `IDOTA2Match_570` (Example for Dota 2) or `ISteamUserStats` (Global).
+* **Endpoint:** `GetMatchHistory`
+* **Parameters:** `account_id`, `matches_requested=10`
+
+3. Detailed Match Analysis
+
+To provide **Coaching**, we pull granular data from specific matches.
+
+* **Endpoint:** `GetMatchDetails`
+* **Key Metrics Collected:**
+* **Last Hits / Denies:** Evaluates early-game efficiency.
+* **Gold Per Minute (GPM):** Measures resource management.
+* **Death Timeline:** Identifies positioning errors or poor map awareness.
+* **Item Purchase Timestamps:** Analyzes power-spike utilization.
+
+
+
+Data Flow Architecture
+
+1. **Request:** User inputs `/analyze [SteamID]` into the Chatbot.
+2. **Fetch:** Chatbot sends an authenticated request to the Steam API.
+3. **Clean:** System filters out irrelevant data (bot matches, abandoned games).
+4. **Analyze:** The AI compares the player's stats against "Pro-Tier" benchmarks for that specific hero/rank.
+5. **Report:** The Chatbot returns a summary with **3 actionable tips** for improvement.
+
+
+
+Sample Implementation (Python)
+
+```python
+import requests
+
+class SteamDataCollector:
+    def __init__(self, api_key):
+        self.api_key = api_key
+        self.base_url = "http://api.steampowered.com"
+
+    def get_player_matches(self, steam_id, game_id="570"):
+        """Fetches the last 5 matches for a specific player."""
+        endpoint = f"{self.base_url}/IDOTA2Match_{game_id}/GetMatchHistory/v1/"
+        params = {
+            'key': self.api_key,
+            'account_id': steam_id,
+            'matches_requested': 5
+        }
+        
+        try:
+            response = requests.get(endpoint, params=params)
+            response.raise_for_status()
+            return response.json().get('result', {}).get('matches', [])
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching data: {e}")
+            return None
+
+# Usage
+# collector = SteamDataCollector("YOUR_API_KEY_HERE")
+# matches = collector.get_player_matches("76561198XXXXXXXXX")
+
+```
+
+
+
+Limitations & Handling
+
+* **Rate Limits:** We implement a **Redis Cache** to store match results for 6 hours to avoid hitting the 100k daily request limit.
+* **Privacy:** If `communityvisibilitystate` is not `3`, the chatbot will prompt the user to make their profile public.
+* **Latency:** API calls are handled asynchronously to ensure the chatbot remains responsive during data fetching.
