@@ -1,79 +1,196 @@
-##  🏛️ Comprehensive Project Specification: SteamStat AI
+# 🎮 Intelligent Steam Statistics Chatbot
 
-**An Autonomous Data Retrieval System utilizing Generative Intent Classification**
+## 📌 Project Overview
 
-The **Intelligent Steam Statistics Chatbot** is a sophisticated integration of modern AI and traditional RESTful API consumption. It is designed to solve the problem of "Data Friction"—the difficulty users face when navigating complex menus to find specific personal metrics. By replacing navigation with conversation, the system provides a frictionless path to personal gaming insights.
+The Intelligent Steam Statistics Chatbot reduces “data friction” by allowing users to retrieve Steam gaming statistics using conversational queries instead of navigating through multiple pages.
 
----
+The system:
 
-### Detailed System Architecture & Data Flow
-
-The system follows a **N-Tier Architecture**, separating the presentation layer from the logic and data layers to ensure maintainability and scalability.
-
-1. **Request Ingestion (Frontend):** The user enters a natural language query into a responsive web interface. This interface manages the WebSocket or HTTP connection to the backend.
-2. **Semantic Analysis (The Brain):** The raw string is sent to the **Gemini API**. Gemini acts as a "Semantic Parser," identifying the user's goal (the Intent) and extracting entities (like game names or timeframes).
-3. **Logical Verification (The Filter):** The backend receives the intent (e.g., `FETCH_TOP_GAMES`). Before execution, a **Rule-Based Validation** layer checks if the user has a linked Steam ID and if the intent is within the "Allowed Actions" registry.
-4. **Service Integration (The Executor):** The **Task Execution Module** triggers a specific Python function. This function constructs a signed request to the **Steam Web API**, handles the handshake, and receives the raw JSON payload.
-5. **Data Synthesis (The Formatter):** Raw data (often messy and containing Unix timestamps or raw minute counts) is processed into human-readable strings or Markdown tables before being returned to the UI.
+- Authenticates users
+- Stores Steam IDs securely
+- Detects query intent using Gemini API
+- Executes predefined tasks using rule-based logic
+- Retrieves data from the Steam Web API
+- Displays formatted statistics and visualizations
 
 ---
 
-### Deep Dive: The Task Execution Framework
+## 🧩 Core Features
 
-In Software Engineering, "Task Execution" is often the most critical part of a middleware application. In this project, it is handled via a **Command Pattern** logic.
+### 🔐 User Authentication
 
-| Component | Technical Functionality |
-| --- | --- |
-| **Intent Dispatcher** | A central controller that maps Gemini's output to a specific internal Python method. |
-| **Data Sanitization** | A process that converts Steam's raw data (e.g., playtime in minutes) into a more relatable format (e.g., hours and days). |
-| **Conditional Logic** | The system must decide what to do if data is missing. For example, if a user asks for "Recently Played" but hasn't played in two weeks, the executor must return a "No recent activity" status rather than an error. |
+- User registration
+- Secure login and logout
+- Password hashing (bcrypt/argon2)
+- Role-based access (Guest vs Registered)
+
+### 👤 User Profile Management
+
+- Save and update Steam ID
+- Link Steam account to user profile
+
+### 💬 Chatbot Interface
+
+Users can ask natural language queries such as:
+
+- “How much have I played Elden Ring?”
+- “Show my most played games.”
+- “How many games do I own?”
+- “Show my recent activity.”
+
+### 🧠 Intent Detection
+
+- Uses Gemini API to classify user queries into predefined intents
+- Intent is validated using modular rule-based logic before execution
+
+### ⚙️ Task Execution Automation
+
+Each detected intent triggers a predefined task:
+
+- Fetch total playtime
+- Retrieve most played games
+- Fetch recently played games
+- Calculate playtime for a specific game
+- Generate statistics summary
+- Recommend similar games
+
+Task execution is deterministic and modular, allowing new query types to be added easily.
+
+### 📊 Charts and Data Visualization
+
+The system generates visual summaries such as:
+
+- Bar charts for playtime per game
+- Pie charts for genre distribution
+- Overall playtime summaries
+
+### 🎯 Game Recommendations (Rule-Based)
+
+Recommendations are generated based on:
+
+- Most played genres
+- Frequently played game types
+- Playtime patterns
+
+(No predictive AI — recommendations follow predefined logical rules.)
 
 ---
 
-### Security and Robustness Protocols
+## 🏗️ System Architecture Overview
 
-A project involving personal user data and third-party APIs requires a rigorous security posture:
+The system follows a clean separation of concerns:
 
-* **Cryptographic User Security:** User passwords never exist in the database as plain text. We utilize **Bcrypt** or **Argon2** for one-way hashing with unique salts, protecting against rainbow table attacks.
-* **API Key Isolation:** The Steam and Gemini API keys are stored in a `.env` file or a secret management service. They are never hard-coded or exposed to the client-side JavaScript.
-* **Graceful Degradation:**
-* **Private Profile Handling:** If the Steam API returns a 403 (Forbidden) because a profile is private, the system delivers a user-friendly guide on how to update Steam privacy settings.
-* **Rate Limiting:** The backend implements logic to prevent "API hammering," ensuring the system stays within Steam's daily request quotas.
+1. **Presentation Layer**
+   - Web-based chatbot interface
 
+2. **Intent Detection Layer**
+   - Gemini API classifies user intent
 
+3. **Validation Layer**
+   - Rule-based logic checks allowed actions and user authentication
 
----
+4. **Task Execution Module**
+   - Maps intent to internal functions
 
-### The Database Schema
+5. **External Integration**
+   - Steam Web API for user statistics
 
-The system relies on a relational database (SQLite/MySQL) to maintain the link between the web application's users and their Steam identities.
-
-* **Users Table:** Stores `user_id`, `username`, `email`, and `password_hash`.
-* **Profiles Table:** Stores `steam_64_id`, `steam_nickname`, and `last_queried_timestamp`. This separation allows a single user to potentially link multiple gaming accounts in the future.
-
----
-
-### Future Research and Scaling
-
-To evolve this from a laboratory project to a production-grade tool, the following vectors are considered:
-
-1. **Asynchronous Processing:** Using **Celery or Redis** to handle data fetching. This ensures the chatbot remains responsive even if the Steam API is slow to respond.
-2. **Predictive Modeling:** Moving beyond descriptive statistics (what happened) to predictive analytics (e.g., "Based on your trends, you will likely finish this game in 20 more hours").
-3. **Multimodal Output:** Enhancing the chatbot to generate dynamic charts and graphs using libraries like **Plotly** or **Chart.js** directly within the chat bubble.
+6. **Formatting & Response Layer**
+   - Processes raw JSON data
+   - Converts minutes to hours
+   - Generates charts
+   - Sends formatted response
 
 ---
 
-### Practical Example of Logic Flow
+## 🔄 Example Logic Flow
 
-**User Input:** *"Tell me if I've played CS:GO recently."*
+User Input:
+“Have I played CS2 recently?”
 
-1. **Gemini Intent:** `CHECK_GAME_ACTIVITY` | **Entity:** `Counter-Strike`
-2. **Validator:** Confirms user is logged in and Steam ID is present.
-3. **Executor:** * Calls `get_recently_played_games(steam_id)`.
-* Iterates through the list to find a name match for "Counter-Strike".
-* Calculates the difference between the current date and the `last_played` timestamp.
+1. Gemini detects intent: CHECK_RECENT_ACTIVITY
+2. System validates that user is logged in and Steam ID exists
+3. Task execution module calls Steam API
+4. System processes timestamps and playtime
+5. Chatbot returns formatted response
 
+Example Output:
+“You last played Counter-Strike 2 yesterday for 3 hours.”
 
-4. **Response:** *"Yes! You last played Counter-Strike 2 yesterday for about 3 hours."*
+---
 
+## 🗄️ Database Schema
 
+### Users Table
+
+- user_id
+- username
+- email
+- password_hash
+
+### Profiles Table
+
+- user_id (foreign key)
+- steam_64_id
+- last_updated
+
+---
+
+## 🔐 Security Practices
+
+- Passwords stored as hashed values
+- API keys stored securely (not hard-coded)
+- Only authenticated users can query personal stats
+- Graceful handling of private Steam profiles
+- Error handling for API rate limits
+
+---
+
+## 🎭 Actors in the System (UML Perspective)
+
+- Guest User (limited access)
+- Registered User (full access)
+- Admin (optional, if implemented)
+
+External APIs (Steam API, Gemini API) are not modeled as actors in UML diagrams because they do not initiate interaction.
+
+---
+
+## 🚀 Future Enhancements
+
+- Export charts as images
+- Add more query types
+- Add query history tracking
+- Improve recommendation logic
+- Support additional gaming platforms
+
+---
+
+## 📚 Academic Context
+
+This project demonstrates:
+
+- Use Case modeling
+- Role-based system design
+- Modular rule-based logic
+- API integration
+- Behavioral analysis of software systems
+- Clear system boundary definition
+
+It is designed to be aligned with Software Engineering requirements, focusing on clarity, modularity, and maintainability rather than overuse of AI.
+
+---
+
+## 📦 Feature Summary
+
+- Authentication system
+- Role-based access (Guest vs Registered)
+- Steam API integration
+- Gemini-based intent detection
+- Rule-based task execution
+- Steam statistics retrieval
+- Charts and visualizations
+- Rule-based recommendations
+- Error handling and validation
+
+---
