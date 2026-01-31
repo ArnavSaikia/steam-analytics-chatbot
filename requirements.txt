@@ -71,7 +71,7 @@ Overall Data Flow
 When a user submits a query, it is first sent to the backend. The backend forwards the message to Gemini for intent detection. After receiving the detected intent, the rule-based logic decides which Steam API call is required. The requested data is then retrieved, processed, summarized, and finally displayed to the user through the chatbot interface
 
 What we want to achieve all through this, is an efficient chatbot that can reflect the statistics of a player for a particular game.
-In the world of constant inclination of gaming tech gaints our contribution is crucial for developments of the players.
-We provide a service that works as a guide to players who wants hone their skill but lacks the capital to hire professionals.
-The chatbot speaks things clearly so that, the player could actually improve his experience. This chatbot could be added to particular games, but this version is general one.
+In the world of constant inclination of gaming tech gaints, our contribution is crucial for developments of the player's skill.
+We provide a differentiable service, that works as a guide to players who want to hone their skill, but lacks the capital to hire professionals.
+The chatbot put things clearly so that, the player could actually improve his experience & skills. This chatbot could be fine-tuned for an particular game, but this version of ours is expected to a general one.
 
