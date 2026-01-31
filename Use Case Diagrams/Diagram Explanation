@@ -1,11 +1,8 @@
 These diagrams represent the functional requirements of the Intelligent Steam Statistics Chatbot. The system allows users to authenticate, query Steam statistics, generate charts and graphs, and receive rule-based game recommendations. The system retrieves data using the Steam Web API, detects user intent using Gemini API, and executes predefined tasks using modular rule-based logic.
 
 1. Guest User vs. Registered User
-
 The system distinguishes between two levels of access to ensure privacy, personalization, and controlled feature access.
-
 Guest User (Limited Access)
-
 The Guest User diagram represents basic system access before authentication.
 
 Actor: Guest User (outside the system boundary).
@@ -13,7 +10,6 @@ Actor: Guest User (outside the system boundary).
 Purpose: Exploration and onboarding.
 
 Key Use Cases:
-
 View Supported Queries
 Allows guests to see what types of statistics and features the chatbot supports.
 
@@ -25,19 +21,15 @@ Allows a guest to create an account.
 
 Login
 Allows the guest to transition into a Registered User.
-
 Guest users do not access personal Steam statistics or recommendations.
 
 Registered User (Full Access)
-
 The Registered User diagram represents the core functionality of the system.
 
 Actor: Registered User (authenticated gamer).
-
 Purpose: Personalized statistics analysis and visualization.
 
 Key Use Cases:
-
 Login / Authentication
 Ensures secure and private access.
 
@@ -46,11 +38,8 @@ Associates a Steam account with the user profile.
 
 Query Steam Statistics
 Allows users to ask questions such as:
-
 “How much have I played Elden Ring?”
-
 “Show my most played games.”
-
 “Show my total playtime.”
 
 View Steam Statistics
@@ -60,16 +49,13 @@ View Charts and Graphs
 Generates visualizations such as:
 
 Playtime distribution (bar chart)
-
 Game category breakdown (pie chart)
 
 Time spent trends
-
 Recommend Similar Games
 Suggests games based on:
 
 Most played genres
-
 Frequently played game categories
 
 Playtime patterns
@@ -81,33 +67,22 @@ Ends the session securely.
 2. Understanding the Relationships
 
 The diagrams include UML relationships that define how use cases interact.
-
 <<include>> Relationship
-
 Represents mandatory internal steps required for a use case to complete.
 
 Examples in this project:
-
 "Query Steam Statistics" <<include>> "Detect User Intent"
-
 "Query Steam Statistics" <<include>> "Fetch Steam Data"
-
 "View Charts and Graphs" <<include>> "Process Statistics Data"
-
 "Recommend Similar Games" <<include>> "Analyze Play Patterns"
 
 This means the main action cannot occur without these internal processes.
-
 Association Relationship (Solid Line)
-
 Represents interaction between an actor and a use case.
 
 Examples:
-
 Registered User — Query Steam Statistics
-
 Registered User — View Charts and Graphs
-
 Guest User — Register
 
 <<extend>> Relationship (Optional Use)
@@ -115,9 +90,7 @@ Guest User — Register
 Used only if an action optionally extends another.
 
 Example (if implemented):
-
 "View Steam Statistics" <<extend>> "Export Chart as Image"
-
 This means exporting is optional and only happens if the user chooses.
 
 3. System Boundary Explanation
@@ -131,7 +104,6 @@ Important Clarification:
 External APIs such as Steam Web API and Gemini API are not actors in the use case diagram because they do not initiate interaction. They are external services used internally by the system.
 
 4. Technical Flow (Behavioral View)
-
 Input
 The Registered User interacts with the chatbot interface (Web UI).
 
@@ -146,40 +118,24 @@ The system fetches relevant data from the Steam Web API.
 
 Processing
 The system:
-
 Aggregates playtime
-
 Sorts games
-
 Computes statistics
-
 Generates chart data
-
 Applies recommendation rules
 
 Output
 The chatbot returns:
-
 Text-based statistics
-
 Charts and graphs
-
 Game recommendations
 
 5. Core Purpose of the Diagrams
-
 These use case diagrams demonstrate:
-
 Role-based access control (Guest vs Registered)
-
 Authentication handling
-
 Task execution automation
-
 Data visualization functionality
-
 Rule-based recommendation system
-
 Clear system scope and boundaries
-
 They capture the behavioral aspects of the software from the user’s perspective and define how different features are accessed and executed.
