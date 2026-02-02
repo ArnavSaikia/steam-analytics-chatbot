@@ -1,5 +1,4 @@
 1. Guest User vs. Registered User
-
 The system distinguishes between two levels of access to ensure privacy, personalization, and controlled feature access.
 Guest User (Limited Access)
 The Guest User diagram represents basic system access before authentication.
@@ -12,9 +11,7 @@ View Sample Statistics: Displays demo data without accessing personal informatio
 Register/Login: Facilitates the transition to a Registered User.
 
 
-
-Registered User (Full Access)**
-
+Registered User (Full Access)
 The Registered User diagram represents the core functionality for authenticated gamers.
 Actor: Registered User.
 Purpose: Personalized statistics analysis and visualization.
@@ -26,7 +23,6 @@ Recommend Similar Games: Suggests titles based on playtime patterns and genres.
 
 
 2. Generalized System Architecture & External Integration**
-
 The Generalized UML Diagram** provides a high-level view of how the system interacts with external entities to fulfill these requests.
 External Actor: Steam Web API
 Unlike internal processes, the Steam Web API is represented as an external entity that the system communicates with to fulfill data-heavy use cases.
@@ -38,14 +34,12 @@ Friends' Stats Comparison: An optional <<extend>> feature that allows users to c
 
 
 
-3. Understanding the Relationships**
-
+3. Understanding the Relationships
 The diagrams define how use cases interact through specific UML relationships.
-
 <<include>> Relationship (Mandatory):
 Represents internal steps required for a use case to complete.
-Example: "Query Steam Statistics" `<<include>>` "Detect User Intent" and "Fetch Steam Data".
-Example: "Recommend Games" `<<include>>` "Based on Playtime Tags/Reviews".
+Example: "Query Steam Statistics" <<include>> "Detect User Intent" and "Fetch Steam Data".
+Example: "Recommend Games" <<include>> "Based on Playtime Tags/Reviews".
 
 <<extend>> Relationship (Optional):
 Used for features that only trigger under specific conditions.
@@ -54,7 +48,6 @@ Example: "Check User's Most Played Games" <<extend>> "View Friends' Stats Compar
 
 
 4. System Boundary & Technical Flow**
-
 The large rectangle defines the System Boundary of the Intelligent Steam Statistics Chatbot.
 1. Input: The Registered User initiates a query via the UI.
 2. Intent & Validation: The system utilizes the Gemini API to detect intent and validates it against modular rules.
@@ -64,11 +57,8 @@ The large rectangle defines the System Boundary of the Intelligent Steam Statist
 
 
 5. Core Purpose of the Diagrams
-
 These diagrams collectively demonstrate:
 Role-Based Access Control: Differentiating between Guest and Registered levels.
 External Integration: Clear boundaries between the Chatbot logic and the Steam Web API.
 Task Automation: How intent detection leads to automated data fetching and processing.
 Recommendation Logic: The transition from raw playtime data to personalized game suggestions.
-
-**Would you like me to help you draft a "Technical Specifications" section that details the specific API calls used for the `<<include>>` fetch data steps?**
