@@ -1,64 +1,53 @@
-1. Guest User vs. Registered User
-The system distinguishes between two levels of access to ensure privacy, personalization, and controlled feature access.
-Guest User (Limited Access)
-The Guest User diagram represents basic system access before authentication.
+1. Core Actors
 
-Actor: Guest User (outside the system boundary).
-Purpose: Exploration and onboarding.
-Key Use Cases:
-View Supported Queries: Allows guests to see supported features.
-View Sample Statistics: Displays demo data without accessing personal information.
-Register/Login: Facilitates the transition to a Registered User.
+The diagram identifies two primary entities interacting with the Steam Analytics Chatbot System:
+
+* User: The human player who initiates queries to analyze their gaming habits or explore global data.
+* Steam Web API: An external system actor that provides the raw data necessary for the chatbot to perform its analysis.
 
 
-Registered User (Full Access)
-The Registered User diagram represents the core functionality for authenticated gamers.
-Actor: Registered User.
-Purpose: Personalized statistics analysis and visualization.
-Key Use Cases:
-Save / Update Steam ID: Associates a specific Steam account with the profile.
-Query & View Steam Statistics:** Retrieves and displays processed results.
-View Charts and Graphs: Generates visual playtime distributions and trends.
-Recommend Similar Games: Suggests titles based on playtime patterns and genres.
+2. Primary Use Cases
+
+The system is designed around four main functional areas:
+
+* Check Game Statistics: General querying of gaming data.
+* Check Global Most Played Games: Retrieving data on trending titles across the entire Steam platform.
+* Check User's Most Played Games: A personalized analysis of a specific player's library and habits.
+* Recommend Games: An automated suggestion engine based on user behavior.
+
+3. Functional Relationships (Include & Extend)
+
+The diagram uses standard UML notation to show how complex tasks are broken down:
+
+Include Relationships (Mandatory Steps)
+These sub-tasks must occur for the main use case to be successful:
+
+* Check User's Most Played Games includes:
+* View Achievements: Tracking specific player milestones.
+* View Playtime Played Games: Calculating hours spent in-game.
 
 
-2. Generalized System Architecture & External Integration**
-The Generalized UML Diagram** provides a high-level view of how the system interacts with external entities to fulfill these requests.
-External Actor: Steam Web API
-Unlike internal processes, the Steam Web API is represented as an external entity that the system communicates with to fulfill data-heavy use cases.
-Extended Functionality:
-Check Global Most Played Games: The system can pull aggregated global data from the API, separate from individual user data.
-Filter by Genre/Tag: An <<extend>> relationship allows users to optionally narrow down global or personal statistics.
-View Achievements & Market Value:** Advanced use cases that include calculating the "Market Value" of a library based on playtime or tracking specific game achievements.
-Friends' Stats Comparison: An optional <<extend>> feature that allows users to compare their performance metrics against their Steam friends list.
+* View Playtime Played Games includes:
+* Based on Playtime View Market Value: A specialized calculation of account value relative to time invested.
+* Recommend Games includes:
+* Based on Playtime Tags/Reviews: 
+* ⁠Using community data and personal history to refine suggestions.
 
 
 
-3. Understanding the Relationships
-The diagrams define how use cases interact through specific UML relationships.
-<<include>> Relationship (Mandatory):
-Represents internal steps required for a use case to complete.
-Example: "Query Steam Statistics" <<include>> "Detect User Intent" and "Fetch Steam Data".
-Example: "Recommend Games" <<include>> "Based on Playtime Tags/Reviews".
+Extend Relationships (Optional Features)
 
-<<extend>> Relationship (Optional):
-Used for features that only trigger under specific conditions.
-Example: "Check Global Most Played Games" <<extend>> "Filter by Genre/Tag".
-Example: "Check User's Most Played Games" <<extend>> "View Friends' Stats Comparison".
+These features provide additional functionality if the user chooses to use them:
+
+* Filter by Genre/Tag: Users can optionally narrow down global or personal "Most Played" lists by specific categories.
+* View Friends' Stats Comparison: Allows the user to optionally compare their playtime and stats against people on their friends list.
 
 
-4. System Boundary & Technical Flow**
-The large rectangle defines the System Boundary of the Intelligent Steam Statistics Chatbot.
-1. Input: The Registered User initiates a query via the UI.
-2. Intent & Validation: The system utilizes the Gemini API to detect intent and validates it against modular rules.
-3.Data Retrieval: The system makes a request to the Steam Web API to pull raw player or global data.
-4. Processing: The system aggregates metrics, computes playtime trends, and generates chart data.
-5. Output: The chatbot returns text-based coaching, visual graphs, or game recommendations.
+4. Data Flow Architecture
 
+The diagram visually separates the System Boundary(the chatbot application) from the External Data Source (Steam Web API):
 
-5. Core Purpose of the Diagrams
-These diagrams collectively demonstrate:
-Role-Based Access Control: Differentiating between Guest and Registered levels.
-External Integration: Clear boundaries between the Chatbot logic and the Steam Web API.
-Task Automation: How intent detection leads to automated data fetching and processing.
-Recommendation Logic: The transition from raw playtime data to personalized game suggestions.
+1. The User sends a request into the system.
+2. The system identifies which Use Case is being triggered.
+3. The system makes a backend call to the Steam Web API to fetch the relevant data packets.
+4. The system processes that data internally (calculating market value, comparing friend stats, or filtering by tags) before presenting it back to the User.
