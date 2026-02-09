@@ -1,4 +1,4 @@
-const steamService = require("../services/steamService");
+const steamService = require("../utils/steamUtils");
 
 const getSteamSummary = async (req, res) => {
     const { steamId } = req.params;
