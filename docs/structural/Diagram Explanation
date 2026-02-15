@@ -1,0 +1,11 @@
+Core Application and Initial Flow
+The process begins at the Client Layer where the WebUI acts as the user interface. When a user performs an action, a request is sent to the Core Application. Within this layer, server.js serves as the entry point to initialize the server, while app.js functions as the central configuration hub. From app.js, the request is routed through the Middleware Layer, where AuthMiddleware verifies the user's identity and ValidationMiddleware ensures the incoming data is safe and correctly formatted.
+
+Routing and Controller Orchestration
+Once a request passes the middleware, app.js directs it to the Routes Layer. This layer contains specific modules like chatRoutes, userRoutes, authRoutes, and steamRoutes that map URL endpoints to logical handlers. These routes then trigger the Controllers Layer. The ChatController, AuthController, and SteamController act as coordinators; they take the user's input and decide which internal services need to be called to fulfill the request.
+
+Business Logic and Service Layer
+The Controllers delegate heavy lifting to the Service Layer. For instance, the ChatController uses the IntentDetectionService to figure out what a user is asking for using AI. The TaskExecutionService manages complex, multi-step backend workflows, while the DataProcessingService cleans up raw data to make it readable. These services often rely on the Utilities Layer, which contains the JWTService for security tokens, the GeminiAPIService for AI communication, and the SteamAPIService for interacting with Steam's infrastructure.
+
+Data Management and External Integration
+During these operations, the system interacts with the Model Layer to persist or retrieve information. The ProfileModel stores specific Steam profile metadata, while the UserModel handles core account details like credentials. Finally, the system connects to External APIs to bridge the gap between your app and the outside world. The GeminiAPI provides generative AI capabilities, and the SteamWebAPI serves as the primary source for live player statistics and game information.
