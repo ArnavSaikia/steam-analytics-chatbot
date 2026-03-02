@@ -11,10 +11,10 @@ app.use(morgan("dev"));
 app.use("/auth", require("./routes/authRoutes.js"));
 app.use("/user", require("./routes/userRoutes"));
 app.use("/chat", require("./routes/chatRoutes"));
-
+app.use("/steam", require("./routes/steamRoutes.js"));
 
 app.get("/status", (req, res) => {
-    res.status(200).json({ status: "OK", message: "Backend running" });
+  res.status(200).json({ status: "OK", message: "Backend running" });
 });
 
 module.exports = app;
