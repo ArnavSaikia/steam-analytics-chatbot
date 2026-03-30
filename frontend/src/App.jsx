@@ -2,7 +2,7 @@ import ChatPage from "./pages/ChatPage";
 import LoginPage from "./pages/LoginPage";
 
 function App() {
-  return <LoginPage/>;
+  return <ChatPage/>;
 }
 
 export default App;
