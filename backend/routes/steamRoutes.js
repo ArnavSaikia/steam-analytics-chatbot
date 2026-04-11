@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {getTopPlayedGames , getTotalAccountPlaytime, getTotalGameCount} = require("../controllers/steamController");
+const {getTopPlayedGames , getTotalAccountPlaytime, getTotalGameCount, getRecentlyPlayedGames} = require("../controllers/steamController");
 const { protect } = require("../middleware/authMiddleware");
 
 //GET_TOP_PLAYED_GAMES
@@ -11,5 +11,8 @@ router.get("/total-playtime", protect, getTotalAccountPlaytime);
 
 //GET_TOTAL_GAME_COUNT
 router.get("/game-count", protect, getTotalGameCount);
+
+//GET_RECENTLY_PLAYED_GAMES
+router.get("/recent-games", protect, getRecentlyPlayedGames);
 
 module.exports = router;

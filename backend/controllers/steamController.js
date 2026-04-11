@@ -121,4 +121,44 @@ const getTotalGameCount = async (req, res) => {
     }
 };
 
-module.exports = { getTopPlayedGames, getTotalAccountPlaytime, getTotalGameCount};
+const getRecentlyPlayedGames = async (req, res) => {
+    try {
+        const user = req.user;
+
+        if (!user.steamId) {
+            return res.status(400).json({ message: "Steam not linked" });
+        }
+
+        const response = await axios.get(
+            "https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/",
+            {
+                params: {
+                    key: process.env.STEAM_API_KEY,
+                    steamid: user.steamId,
+                },
+            }
+        );
+
+        const games = response.data.response.games || [];
+
+        if (!games.length) {
+            return res.json({ message: "No recent activity in last 2 weeks" });
+        }
+
+        const formatted = games.map(game => ({
+            name: game.name,
+            playtime_2weeks_hours: (game.playtime_2weeks / 60).toFixed(1),
+            playtime_total_hours: (game.playtime_forever / 60).toFixed(1),
+        }));
+
+        res.json({
+            count: formatted.length,
+            recent_games: formatted,
+        });
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+module.exports = { getTopPlayedGames, getTotalAccountPlaytime, getTotalGameCount, getRecentlyPlayedGames};
