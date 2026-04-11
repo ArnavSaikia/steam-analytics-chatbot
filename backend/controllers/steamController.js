@@ -91,4 +91,34 @@ const getTotalAccountPlaytime = async (req, res) => {
     }
 };
 
-module.exports = { getTopPlayedGames, getTotalAccountPlaytime };
+//GET_TOTAL_GAME_COUNT
+const getTotalGameCount = async (req, res) => {
+    try {
+        const user = req.user;
+
+        if (!user.steamId) {
+            return res.status(400).json({ message: "Steam not linked" });
+        }
+
+        const response = await axios.get(
+            "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/",
+            {
+                params: {
+                    key: process.env.STEAM_API_KEY,
+                    steamid: user.steamId,
+                },
+            }
+        );
+
+        const games = response.data.response.games || [];
+
+        res.json({
+            total_games: games.length,
+        });
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+module.exports = { getTopPlayedGames, getTotalAccountPlaytime, getTotalGameCount};
