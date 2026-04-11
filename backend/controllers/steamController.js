@@ -1,50 +1,51 @@
 const steamService = require("../utils/steamUtils");
+const axios = require('axios')
 
-const getSteamSummary = async (req, res) => {
-    const { steamId } = req.params;
-
-    if (!steamId) {
-        return res.status(400).json({ message: "Steam ID is required" });
-    }
-
+const getTopPlayedGames = async (req, res) => {
     try {
-        const games = await steamService.getOwnedGames(steamId);
+        const user = req.user;
 
-        if (games.length === 0) {
-            return res.json({
-                totalGames: 0,
-                totalPlaytimeHours: 0,
-                mostPlayedGame: null
-            });
+        if (!user.steamId) {
+            return res.status(400).json({ message: "Steam not linked" });
         }
 
-        let totalPlaytimeMinutes = 0;
-        let mostPlayedGame = games[0];
-
-        for (const game of games) {
-            totalPlaytimeMinutes += game.playtime_forever;
-
-            if (game.playtime_forever > mostPlayedGame.playtime_forever) {
-                mostPlayedGame = game;
+        // Fetch owned games
+        const response = await axios.get(
+            "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/",
+            {
+                params: {
+                    key: process.env.STEAM_API_KEY,
+                    steamid: user.steamId,
+                    include_appinfo: true,
+                },
             }
+        );
+
+        let games = response.data.response.games || [];
+
+        if (!games.length) {
+            return res.json({ message: "No games found or profile is private" });
         }
+
+        // Sort by playtime (descending)
+        games.sort((a, b) => b.playtime_forever - a.playtime_forever);
+
+        // Limit results (default top 5)
+        const limit = parseInt(req.query.limit) || 5;
+
+        const topGames = games.slice(0, limit).map(game => ({
+            name: game.name,
+            playtime_hours: (game.playtime_forever / 60).toFixed(1),
+        }));
 
         res.json({
-            totalGames: games.length,
-            totalPlaytimeHours: Math.round(totalPlaytimeMinutes / 60),
-            mostPlayedGame: {
-                name: mostPlayedGame.name,
-                playtimeHours: Math.round(mostPlayedGame.playtime_forever / 60)
-            }
+            count: topGames.length,
+            topGames,
         });
+
     } catch (err) {
-        res.status(500).json({
-            message: "Failed to fetch Steam data",
-            error: err.message
-        });
+        res.status(500).json({ message: err.message });
     }
 };
 
-module.exports = {
-    getSteamSummary
-};
+module.exports = {getTopPlayedGames};

@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const steamController = require("../controllers/steamController");
+const {getTopPlayedGames} = require("../controllers/steamController");
+const { protect } = require("../middleware/authMiddleware");
 
-router.get("/summary/:steamId", steamController.getSteamSummary);
+router.get("/top-games", protect, getTopPlayedGames);
 
 module.exports = router;

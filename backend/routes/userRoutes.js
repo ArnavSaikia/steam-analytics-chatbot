@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("/profile", (req, res) => {
-    res.json({ message: "User profile (TODO)" });
-});
+const { protect } = require("../middleware/authMiddleware");
+const { linkSteam } = require("../controllers/userController");
 
-router.post("/steam-id", (req, res) => {
-    res.json({ message: "Save Steam ID (TODO)" });
-});
+router.post("/steam", protect, linkSteam);
 
 module.exports = router;

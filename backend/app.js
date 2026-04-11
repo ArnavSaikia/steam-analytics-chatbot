@@ -11,7 +11,13 @@ app.use(express.urlencoded({ extended: true }));
 
 const authRoutes = require("./routes/authRoutes");
 app.use("/auth", authRoutes);
-app.use("/user", require("./routes/userRoutes"));
+
+const userRoutes = require("./routes/userRoutes");
+app.use("/user", userRoutes);
+
+const steamRoutes = require('./routes/steamRoutes');
+app.use("/queries", steamRoutes)
+
 app.use("/chat", require("./routes/chatRoutes"));
 
 
