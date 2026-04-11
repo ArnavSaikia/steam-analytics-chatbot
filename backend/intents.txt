@@ -1,0 +1,57 @@
+GET_TOP_PLAYED_GAMES
+GET_TOTAL_ACCOUNT_PLAYTIME
+GET_TOTAL_GAME_COUNT
+GET_RECENTLY_PLAYED_GAMES
+GET_GAME_PLAYTIME_BY_NAME
+GET_PROFILE_SUMMARY
+
+GET_GAME_RECOMMENDATIONS
+
+GET_FRIENDS_CURRENT_ACTIVITY
+
+FALLBACK_UNKNOWN_INTENT
+
+
+
+
+
+GET_TOP_PLAYED_GAMES
+
+👉 Top N games by total playtime
+
+2. GET_TOTAL_ACCOUNT_PLAYTIME
+
+👉 Sum of all playtime across all games
+
+3. GET_TOTAL_GAME_COUNT
+
+👉 Number of owned games
+
+4. GET_RECENTLY_PLAYED_GAMES
+
+👉 Last 2 weeks activity
+
+5. GET_GAME_PLAYTIME_BY_NAME
+
+👉 Playtime of a specific game
+
+Input:
+
+{
+  "game": "GTA V"
+}
+6. GET_PROFILE_SUMMARY
+
+👉 Name, avatar, basic info
+
+7. GET_GAME_RECOMMENDATIONS
+
+👉 Gemini-powered suggestions
+
+8. GET_FRIENDS_CURRENT_ACTIVITY
+
+👉 What friends are playing (if public)
+
+9. FALLBACK_UNKNOWN_INTENT
+
+👉 Catch-all
