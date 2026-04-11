@@ -4,111 +4,109 @@ const ai = new GoogleGenAI({}); //auto assuming GEMINI_API_KEY is the env name. 
 
 const MODEL = "gemini-2.5-flash";
 
-function buildPrompt(userQuery){
+function buildPrompt(userQuery) {
     return `
         You are an intent classification engine for a Steam Statistics Chatbot.
 
-        Your only task is to analyze a user's message and classify it into exactly one predefined intent.
+        Your task:
+        1. Identify the user's intent
+        2. Extract required parameters if needed
 
-        You must follow these rules strictly:
-
-        1. You must return ONLY the intent name.
-        2. Do NOT explain your answer.
-        3. Do NOT include extra words.
-        4. Do NOT include punctuation, JSON, or formatting.
-        5. Do NOT include quotes.
-        6. Your response must exactly match one of the predefined intent names.
-        7. If the message does not match any intent, return UNKNOWN.
-
-        You are NOT a chatbot. You are ONLY an intent classifier.
+        You MUST return ONLY a valid JSON object.
+        No explanation. No extra text.
 
         ---
 
-        CONTEXT:
+        OUTPUT FORMAT:
 
-        The chatbot allows users to query their Steam gaming statistics. The system retrieves data using the Steam Web API.
-
-        Users may ask about:
-
-        - Their Steam profile information
-        - Games they own
-        - Total playtime
-        - Most played game
-        - Recently played games
-        - Achievement statistics
-        - Validation of their Steam ID
+        {
+        "intent": "<INTENT_NAME>",
+        "game": "<game name if applicable or null>"
+        }
 
         ---
 
-        PREDEFINED INTENTS:
+        AVAILABLE INTENTS:
 
+        GET_TOP_PLAYED_GAMES
+        GET_TOTAL_ACCOUNT_PLAYTIME
+        GET_TOTAL_GAME_COUNT
+        GET_RECENTLY_PLAYED_GAMES
+        GET_GAME_PLAYTIME_BY_NAME
         GET_PROFILE_SUMMARY
-        GET_OWNED_GAMES_SUMMARY
-        GET_RECENTLY_PLAYED
-        GET_ACHIEVEMENT_SUMMARY
-        VALIDATE_STEAM_ID
-        HELP
-        UNKNOWN
+        GET_GAME_RECOMMENDATIONS
+        GET_FRIENDS_CURRENT_ACTIVITY
+        FALLBACK_UNKNOWN_INTENT
 
         ---
 
         INTENT DEFINITIONS:
 
+        GET_TOP_PLAYED_GAMES
+        User asks for most played games.
+
+        GET_TOTAL_ACCOUNT_PLAYTIME
+        User asks for total playtime across all games.
+
+        GET_TOTAL_GAME_COUNT
+        User asks for number of owned games.
+
+        GET_RECENTLY_PLAYED_GAMES
+        User asks about recent activity.
+
+        GET_GAME_PLAYTIME_BY_NAME
+        User asks about playtime for a specific game.
+
         GET_PROFILE_SUMMARY
-        User wants profile information such as username, avatar, or profile details.
+        User asks about their Steam profile.
 
-        GET_OWNED_GAMES_SUMMARY
-        User wants statistics about owned games, total games, total playtime, or most played game.
+        GET_GAME_RECOMMENDATIONS
+        User asks what they should play or for recommendations.
 
-        GET_RECENTLY_PLAYED
-        User wants to know recently played games or recent activity.
+        GET_FRIENDS_CURRENT_ACTIVITY
+        User asks what their friends are playing.
 
-        GET_ACHIEVEMENT_SUMMARY
-        User wants achievement statistics for a game or overall achievements.
-
-        VALIDATE_STEAM_ID
-        User wants to check, verify, or confirm their Steam ID.
-
-        HELP
-        User is asking what the bot can do or how to use it.
-
-        UNKNOWN
-        Message does not match any supported intent.
+        FALLBACK_UNKNOWN_INTENT
+        Anything unrelated.
 
         ---
 
         EXAMPLES:
 
-        User: how many games do i own
-        Response: GET_OWNED_GAMES_SUMMARY
+        User: what are my top games
+        Response:
+        {
+        "intent": "GET_TOP_PLAYED_GAMES",
+        "game": null
+        }
 
-        User: show my steam profile
-        Response: GET_PROFILE_SUMMARY
+        User: how much have i played gta 5
+        Response:
+        {
+        "intent": "GET_GAME_PLAYTIME_BY_NAME",
+        "game": "GTA 5"
+        }
 
-        User: what did i play recently
-        Response: GET_RECENTLY_PLAYED
-
-        User: check if this steam id is valid
-        Response: VALIDATE_STEAM_ID
-
-        User: what can you do
-        Response: HELP
+        User: suggest a game
+        Response:
+        {
+        "intent": "GET_GAME_RECOMMENDATIONS",
+        "game": null
+        }
 
         User: hello
-        Response: UNKNOWN
+        Response:
+        {
+        "intent": "FALLBACK_UNKNOWN_INTENT",
+        "game": null
+        }
 
         ---
 
-        Remember:
+        Now classify this:
 
-        Return ONLY the intent name.
-        Nothing else.
-
-        ---
-
-        Now respond to this user query abiding by the aforementioned instruction:-
         User Query: ${userQuery}
-        `
+    `;
 }
 
 async function generateText(prompt) {
@@ -126,10 +124,38 @@ async function generateText(prompt) {
     }
 }
 
-async function returnIntent(userQuery){
+async function returnIntent(userQuery) {
     const prompt = buildPrompt(userQuery);
-    return await generateText(prompt);
+    const raw = await generateText(prompt);
+
+    try {
+        return JSON.parse(raw);
+    } catch (err) {
+        return {
+            intent: "FALLBACK_UNKNOWN_INTENT",
+            game: null
+        };
+    }
 }
 
 
-module.exports = { returnIntent };
+async function getRecommendationsFromGemini(topGames) {
+    const prompt = `
+        You are a game recommendation engine.
+
+        A user frequently plays these games:
+        ${topGames.join(", ")}
+
+        Recommend 3 Steam games they might like.
+
+        Return ONLY a simple list of game names.
+        No explanation.
+    `;
+
+    const response = await generateText(prompt);
+
+    return response;
+}
+
+
+module.exports = { returnIntent , getRecommendationsFromGemini };

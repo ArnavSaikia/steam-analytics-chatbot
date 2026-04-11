@@ -1,5 +1,6 @@
 const steamService = require("../utils/steamUtils");
 const axios = require('axios')
+const { getRecommendationsFromGemini } = require("../services/geminiService");
 
 //GET_TOP_PLAYED_GAMES
 const getTopPlayedGames = async (req, res) => {
@@ -214,5 +215,91 @@ const getGamePlaytimeByName = async (req, res) => {
     }
 };
 
+//GET_PROFILE_SUMMARY
+const getProfileSummary = async (req, res) => {
+    try {
+        const user = req.user;
 
-module.exports = { getTopPlayedGames, getTotalAccountPlaytime, getTotalGameCount, getRecentlyPlayedGames, getGamePlaytimeByName};
+        if (!user.steamId) {
+            return res.status(400).json({ message: "Steam not linked" });
+        }
+
+        const response = await axios.get(
+            "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/",
+            {
+                params: {
+                    key: process.env.STEAM_API_KEY,
+                    steamids: user.steamId,
+                },
+            }
+        );
+
+        const players = response.data.response.players;
+
+        if (!players.length) {
+            return res.status(404).json({ message: "Profile not found" });
+        }
+
+        const profile = players[0];
+
+        res.json({
+            name: profile.personaname,
+            avatar: profile.avatarfull,
+            profile_url: profile.profileurl,
+            visibility: profile.communityvisibilitystate === 3 ? "Public" : "Private",
+            last_seen: profile.lastlogoff
+        });
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+
+//GET_GAME_RECOMMENDATIONS
+//func works but need to change the gemini key in env. it has expired
+const getGameRecommendations = async (req, res) => {
+    try {
+        const user = req.user;
+
+        if (!user.steamId) {
+            return res.status(400).json({ message: "Steam not linked" });
+        }
+
+        const response = await axios.get(
+            "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/",
+            {
+                params: {
+                    key: process.env.STEAM_API_KEY,
+                    steamid: user.steamId,
+                    include_appinfo: true,
+                },
+            }
+        );
+
+        const games = response.data.response.games || [];
+
+        if (!games.length) {
+            return res.json({ message: "No games found" });
+        }
+
+        // Get top 5 games
+        const topGames = games
+            .sort((a, b) => b.playtime_forever - a.playtime_forever)
+            .slice(0, 5)
+            .map(g => g.name);
+
+        const recommendations = await getRecommendationsFromGemini(topGames);
+
+        res.json({
+            based_on: topGames,
+            recommendations
+        });
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+
+module.exports = { getTopPlayedGames, getTotalAccountPlaytime, getTotalGameCount, getRecentlyPlayedGames, getGamePlaytimeByName, getProfileSummary, getGameRecommendations};
