@@ -161,4 +161,58 @@ const getRecentlyPlayedGames = async (req, res) => {
     }
 };
 
-module.exports = { getTopPlayedGames, getTotalAccountPlaytime, getTotalGameCount, getRecentlyPlayedGames};
+//GET_GAME_PLAYTIME_BY_NAME
+const getGamePlaytimeByName = async (req, res) => {
+    try {
+        const user = req.user;
+        const { game } = req.query;
+
+        if (!user.steamId) {
+            return res.status(400).json({ message: "Steam not linked" });
+        }
+
+        if (!game) {
+            return res.status(400).json({ message: "Game name is required" });
+        }
+
+        const response = await axios.get(
+            "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/",
+            {
+                params: {
+                    key: process.env.STEAM_API_KEY,
+                    steamid: user.steamId,
+                    include_appinfo: true,
+                },
+            }
+        );
+
+        const games = response.data.response.games || [];
+
+        if (!games.length) {
+            return res.json({ message: "No games found or profile is private" });
+        }
+
+        const query = game.toLowerCase();
+
+        // Basic matching
+        const matchedGame = games.find(g =>
+            g.name.toLowerCase().includes(query)
+        );
+
+        if (!matchedGame) {
+            return res.status(404).json({ message: "Game not found in library" });
+        }
+
+        res.json({
+            name: matchedGame.name,
+            playtime_hours: (matchedGame.playtime_forever / 60).toFixed(1),
+            playtime_minutes: matchedGame.playtime_forever,
+        });
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+
+module.exports = { getTopPlayedGames, getTotalAccountPlaytime, getTotalGameCount, getRecentlyPlayedGames, getGamePlaytimeByName};
