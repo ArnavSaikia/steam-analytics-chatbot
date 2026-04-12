@@ -43,6 +43,11 @@ const chatHandler = async (req, res) => {
                 return steamController.getRecentlyPlayedGames(req, res);
 
             case "GET_GAME_PLAYTIME_BY_NAME":
+                if (intent === "GET_GAME_PLAYTIME_BY_NAME" && !req.query.game) {
+                    return res.json({
+                        message: "Please specify a game name"
+                    });
+                }
                 return steamController.getGamePlaytimeByName(req, res);
 
             case "GET_PROFILE_SUMMARY":
