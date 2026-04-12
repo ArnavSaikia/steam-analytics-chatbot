@@ -18,7 +18,8 @@ app.use("/user", userRoutes);
 const steamRoutes = require('./routes/steamRoutes');
 app.use("/queries", steamRoutes)
 
-app.use("/chat", require("./routes/chatRoutes"));
+const chatRoutes = require("./routes/chatRoutes");
+app.use("/chat", chatRoutes);
 
 
 app.get("/status", (req, res) => {

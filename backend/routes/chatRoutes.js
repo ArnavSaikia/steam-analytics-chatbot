@@ -1,14 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-router.post("/", (req, res) => {
-    const { message } = req.body;
+const { chatHandler } = require("../controllers/chatController");
+const { protect } = require("../middleware/authMiddleware");
 
-    res.json({
-        userMessage: message,
-        intent: "PLACEHOLDER_INTENT",
-        response: "Chatbot logic will be added later"
-    });
-});
+router.post("/", protect, chatHandler);
 
 module.exports = router;
