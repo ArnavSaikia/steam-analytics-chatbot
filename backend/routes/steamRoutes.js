@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {getTopPlayedGames , getTotalAccountPlaytime, getTotalGameCount, getRecentlyPlayedGames, getGamePlaytimeByName, getProfileSummary, getGameRecommendations} = require("../controllers/steamController");
+const {getTopPlayedGames , getTotalAccountPlaytime, getTotalGameCount, getRecentlyPlayedGames, getGamePlaytimeByName, getProfileSummary, getGameRecommendations, getFriendsCurrentActivity} = require("../controllers/steamController");
 const { protect } = require("../middleware/authMiddleware");
 
 //GET_TOP_PLAYED_GAMES
@@ -23,5 +23,8 @@ router.get("/profile", protect, getProfileSummary);
 
 //GET_GAME_RECOMMENDATIONS
 router.get('/recommendations', protect, getGameRecommendations)
+
+//GET_FRIENDS_CURRENT_ACTIVITY
+router.get('/friend-activity', protect, getFriendsCurrentActivity);
 
 module.exports = router;

@@ -302,4 +302,84 @@ const getGameRecommendations = async (req, res) => {
 };
 
 
-module.exports = { getTopPlayedGames, getTotalAccountPlaytime, getTotalGameCount, getRecentlyPlayedGames, getGamePlaytimeByName, getProfileSummary, getGameRecommendations};
+//GET_FRIENDS_CURRENT_ACTIVITY
+const getFriendsCurrentActivity = async (req, res) => {
+    try {
+        const user = req.user;
+
+        if (!user.steamId) {
+            return res.status(400).json({ message: "Steam not linked" });
+        }
+
+        // Step 1: Get friends
+        const friendsRes = await axios.get(
+            "https://api.steampowered.com/ISteamUser/GetFriendList/v1/",
+            {
+                params: {
+                    key: process.env.STEAM_API_KEY,
+                    steamid: user.steamId,
+                },
+            }
+        );
+
+        const friends = friendsRes.data.friendslist?.friends || [];
+
+        if (!friends.length) {
+            return res.json({
+                message: "No friends found or friends list is private"
+            });
+        }
+
+        const results = [];
+
+        // Step 2: Loop over friends (limit to avoid spam)
+        for (let i = 0; i < Math.min(friends.length, 10); i++) {
+            const friendId = friends[i].steamid;
+
+            try {
+                const recentRes = await axios.get(
+                    "https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/",
+                    {
+                        params: {
+                            key: process.env.STEAM_API_KEY,
+                            steamid: friendId,
+                        },
+                    }
+                );
+
+                const games = recentRes.data.response.games || [];
+
+                if (games.length > 0) {
+                    results.push({
+                        steamid: friendId,
+                        recent_games: games.slice(0, 2).map(g => ({
+                            name: g.name,
+                            playtime_2weeks_hours: (g.playtime_2weeks / 60).toFixed(1),
+                        })),
+                    });
+                }
+
+            } catch (err) {
+                // ignore individual failures (private profiles etc.)
+                continue;
+            }
+        }
+
+        if (!results.length) {
+            return res.json({
+                message: "No recent activity found for friends"
+            });
+        }
+
+        res.json({
+            count: results.length,
+            friends_activity: results,
+        });
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+
+module.exports = { getTopPlayedGames, getTotalAccountPlaytime, getTotalGameCount, getRecentlyPlayedGames, getGamePlaytimeByName, getProfileSummary, getGameRecommendations, getFriendsCurrentActivity};
