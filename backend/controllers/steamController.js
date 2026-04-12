@@ -330,12 +330,36 @@ const getFriendsCurrentActivity = async (req, res) => {
             });
         }
 
+        // Limit for safety
+        const limitedFriends = friends.slice(0, 10);
+        const friendIds = limitedFriends.map(f => f.steamid);
+
+        // Step 2: Get profile data (ONE CALL)
+        const summaryRes = await axios.get(
+            "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/",
+            {
+                params: {
+                    key: process.env.STEAM_API_KEY,
+                    steamids: friendIds.join(","),
+                },
+            }
+        );
+
+        const players = summaryRes.data.response.players || [];
+
+        // Map steamId → profile
+        const profileMap = {};
+        players.forEach(p => {
+            profileMap[p.steamid] = {
+                name: p.personaname,
+                avatar: p.avatarfull,
+            };
+        });
+
         const results = [];
 
-        // Step 2: Loop over friends (limit to avoid spam)
-        for (let i = 0; i < Math.min(friends.length, 10); i++) {
-            const friendId = friends[i].steamid;
-
+        // Step 3: Fetch recent games per friend
+        for (const friendId of friendIds) {
             try {
                 const recentRes = await axios.get(
                     "https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/",
@@ -352,6 +376,8 @@ const getFriendsCurrentActivity = async (req, res) => {
                 if (games.length > 0) {
                     results.push({
                         steamid: friendId,
+                        name: profileMap[friendId]?.name || "Unknown",
+                        avatar: profileMap[friendId]?.avatar || null,
                         recent_games: games.slice(0, 2).map(g => ({
                             name: g.name,
                             playtime_2weeks_hours: (g.playtime_2weeks / 60).toFixed(1),
@@ -360,8 +386,7 @@ const getFriendsCurrentActivity = async (req, res) => {
                 }
 
             } catch (err) {
-                // ignore individual failures (private profiles etc.)
-                continue;
+                continue; // ignore private profiles
             }
         }
 
