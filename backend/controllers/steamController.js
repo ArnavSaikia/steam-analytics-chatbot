@@ -407,4 +407,26 @@ const getFriendsCurrentActivity = async (req, res) => {
 };
 
 
-module.exports = { getTopPlayedGames, getTotalAccountPlaytime, getTotalGameCount, getRecentlyPlayedGames, getGamePlaytimeByName, getProfileSummary, getGameRecommendations, getFriendsCurrentActivity};
+//FALLBACK_UNKNOWN_INTENT
+const fallbackUnknownIntent = async (req, res) => {
+    try {
+        res.json({
+            message: "Sorry, I didn't understand that request.",
+            supported_queries: [
+                "Show my top played games",
+                "How many games do I own?",
+                "What is my total playtime?",
+                "What have I played recently?",
+                "How much have I played GTA V?",
+                "Show my Steam profile",
+                "Recommend me a game",
+                "What are my friends playing?"
+            ]
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+
+module.exports = { getTopPlayedGames, getTotalAccountPlaytime, getTotalGameCount, getRecentlyPlayedGames, getGamePlaytimeByName, getProfileSummary, getGameRecommendations, getFriendsCurrentActivity, fallbackUnknownIntent};
