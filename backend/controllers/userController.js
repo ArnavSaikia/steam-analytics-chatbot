@@ -87,14 +87,10 @@ const returnProfile = async (req , res) => {
         const user = req.user;
 
         if(!user) return res.status(404).json("User not found");
-
-        const UserObj = await User.findById(user.id);
-
-        if(!UserObj) return res.status(404).json("User not found in database");
         
         return res.status(200).json({
-            username: UserObj.username,
-            steamId: UserObj.steamId,
+            username: user.username,
+            steamId: user.steamId,
         });
     } catch (err) {
         return res.status(500).json({ message: err.message });

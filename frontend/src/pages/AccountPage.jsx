@@ -17,16 +17,14 @@ function AccountPage() {
     useEffect(() => {
         const fetchProfile = async () => {
             const token = localStorage.getItem("token");
-            console.log(token);
             const response = await fetch(`${API_URL}/user/profile`, {
-                method: "POST",
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
             });
             const data = await response.json();
-            console.log(data)
 
             if(!response.ok) return;
 
@@ -37,14 +35,29 @@ function AccountPage() {
         fetchProfile();
     }, [])
 
-    const handleSave = () => {
-        // placeholder validation
-        if (tempSteamId.length < 5) {
-            setError("Invalid Steam ID");
-            return;
+    const handleSave = async () => {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API_URL}/user/steam`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                steamInput: tempSteamId,
+            })
+        });
+        const data = await res.json();
+
+        console.log(data);
+
+        if(!res.ok) {
+            setEditing(false);
+            setError(data.message);
+            return 
         }
 
-        setSteamId(tempSteamId);
+        setSteamId(res.steamId);
         setEditing(false);
         setError("");
     };
