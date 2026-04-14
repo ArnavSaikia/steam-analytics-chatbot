@@ -5,15 +5,12 @@ export default {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ["Nunito", "sans-serif"]
-      },
       colors: {
-        babyPink: "#ffc6da",
-        cream: "#fff7ed",
-        pastelBlue: "#dbeafe",
-      }
-    }
+        border: "hsl(var(--border))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+      },
+    },
   },
   plugins: [],
 }
