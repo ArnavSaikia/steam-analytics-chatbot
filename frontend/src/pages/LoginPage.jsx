@@ -5,12 +5,39 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 function LoginPage() {
+    const API_URL = import.meta.env.VITE_API_URL;
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        console.log({ email, password }); // placeholder
+        try {
+            const res = await fetch(`${API_URL}/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: email, // too lazy to change this shit
+                    password,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Login failed");
+            }
+
+            localStorage.setItem("token", data.token);
+
+            console.log("Login success", data);
+
+            // redirect to chat later
+        } catch (err) {
+            console.error(err.message);
+        }        
     };
 
     return (
@@ -26,10 +53,9 @@ function LoginPage() {
                 <CardContent>
                     <form onSubmit={handleLogin} className="space-y-5">
                         <div className="space-y-2">
-                            <label className="text-sm text-zinc-400">Email</label>
+                            <label className="text-sm text-zinc-400">Username</label>
                             <Input
-                                type="email"
-                                placeholder="you@email.com"
+                                placeholder="SquigglyNoodle67"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="bg-white/10 border-white/10 focus-visible:ring-violet-500"
