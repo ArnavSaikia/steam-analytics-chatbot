@@ -4,7 +4,7 @@ import SignupPage from "./pages/SignupPage";
 import AccountPage from "./pages/AccountPage";
 
 function App() {
-  return <LoginPage/>;
+  return <AccountPage/>;
 }
 
 export default App;

@@ -82,4 +82,23 @@ const linkSteam = async (req, res) => {
     }
 };
 
-module.exports = { linkSteam };
+const returnProfile = async (req , res) => {
+    try{
+        const user = req.user;
+
+        if(!user) return res.status(404).json("User not found");
+
+        const UserObj = await User.findById(user.id);
+
+        if(!UserObj) return res.status(404).json("User not found in database");
+        
+        return res.status(200).json({
+            username: UserObj.username,
+            steamId: UserObj.steamId,
+        });
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { linkSteam , returnProfile };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -6,11 +6,36 @@ import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 
 function AccountPage() {
-    const [username] = useState("Arnav"); // placeholder
+    const API_URL = import.meta.env.VITE_API_URL;
+
+    const [username, setUsername] = useState("SquigglyNoodle67"); // placeholder
     const [steamId, setSteamId] = useState("123456789"); // placeholder
     const [editing, setEditing] = useState(false);
     const [tempSteamId, setTempSteamId] = useState(steamId);
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            const token = localStorage.getItem("token");
+            console.log(token);
+            const response = await fetch(`${API_URL}/user/profile`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            console.log(data)
+
+            if(!response.ok) return;
+
+            setUsername(data.username);
+            setSteamId(data.steamId);
+        };
+
+        fetchProfile();
+    }, [])
 
     const handleSave = () => {
         // placeholder validation
