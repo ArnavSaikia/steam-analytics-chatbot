@@ -1,6 +1,6 @@
 import { useState , useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
@@ -13,6 +13,7 @@ function AccountPage() {
     const [editing, setEditing] = useState(false);
     const [tempSteamId, setTempSteamId] = useState(steamId);
     const [error, setError] = useState("");
+    const [avatarUrl, setAvatarUrl] = useState("")
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -30,6 +31,8 @@ function AccountPage() {
 
             setUsername(data.username);
             setSteamId(data.steamId);
+
+            if(data.steamProfile) setAvatarUrl(data.steamProfile.avatar);
         };
 
         fetchProfile();
@@ -57,9 +60,12 @@ function AccountPage() {
             return 
         }
 
-        setSteamId(res.steamId);
+        setSteamId(data.steamId);
         setEditing(false);
         setError("");
+        if (data.profile?.avatar) {
+            setAvatarUrl(data.profile.avatar);
+        }
     };
 
     return (
@@ -75,8 +81,11 @@ function AccountPage() {
                     {/* Avatar + Name */}
                     <div className="flex flex-col items-center gap-3">
                         <Avatar className="h-16 w-16">
+                            {avatarUrl && (
+                                <AvatarImage src={avatarUrl} alt="Steam Avatar" />
+                            )}
                             <AvatarFallback className="bg-violet-600 text-white text-xl">
-                                {username[0]}
+                                {username?.[0]}
                             </AvatarFallback>
                         </Avatar>
                         <p className="text-lg font-medium">{username}</p>
