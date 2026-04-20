@@ -21,11 +21,13 @@ const chatHandler = async (req, res) => {
         }
 
         const { intent, game } = intentData;
+        console.log(intent,game)
 
         // Inject game into req.query if needed
         if (game) {
-            req.query.game = game;
+            req.intentData = { game }; // attach to a custom property
         }
+        console.log(req.intentData)
 
         // Step 2: Route to correct handler
         switch (intent) {
@@ -43,10 +45,8 @@ const chatHandler = async (req, res) => {
                 return steamController.getRecentlyPlayedGames(req, res);
 
             case "GET_GAME_PLAYTIME_BY_NAME":
-                if (intent === "GET_GAME_PLAYTIME_BY_NAME" && !req.query.game) {
-                    return res.json({
-                        message: "Please specify a game name"
-                    });
+                if (!req.intentData?.game && !req.query.game) {
+                    return res.json({ message: "Please specify a game name" });
                 }
                 return steamController.getGamePlaytimeByName(req, res);
 

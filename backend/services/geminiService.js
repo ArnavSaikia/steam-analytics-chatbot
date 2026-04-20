@@ -15,6 +15,12 @@ function buildPrompt(userQuery) {
         You MUST return ONLY a valid JSON object.
         No explanation. No extra text.
 
+        IMPORTANT:
+        Return ONLY raw JSON.
+        Do NOT wrap in markdown.
+        Do NOT add backticks.
+        Do NOT add explanations.
+
         ---
 
         OUTPUT FORMAT:
@@ -124,18 +130,39 @@ async function generateText(prompt) {
     }
 }
 
+function extractJSON(text) {
+    try {
+        if (!text) return null;
+
+        // Remove markdown fences and junk
+        const cleaned = text
+            .replace(/```json/gi, "")
+            .replace(/```/g, "")
+            .trim();
+
+        return JSON.parse(cleaned);
+    } catch (err) {
+        return null;
+    }
+}
+
 async function returnIntent(userQuery) {
     const prompt = buildPrompt(userQuery);
     const raw = await generateText(prompt);
 
-    try {
-        return JSON.parse(raw);
-    } catch (err) {
+    console.log("RAW GEMINI RESPONSE:", raw); // 🔍 IMPORTANT
+
+    const parsed = extractJSON(raw);
+
+    if (!parsed || !parsed.intent) {
+        console.log("Failed to parse Gemini response");
         return {
             intent: "FALLBACK_UNKNOWN_INTENT",
             game: null
         };
     }
+
+    return parsed;
 }
 
 

@@ -166,7 +166,7 @@ const getRecentlyPlayedGames = async (req, res) => {
 const getGamePlaytimeByName = async (req, res) => {
     try {
         const user = req.user;
-        const { game } = req.query;
+        const game = req.query.game || req.intentData?.game;
 
         if (!user.steamId) {
             return res.status(400).json({ message: "Steam not linked" });
@@ -183,6 +183,7 @@ const getGamePlaytimeByName = async (req, res) => {
                     key: process.env.STEAM_API_KEY,
                     steamid: user.steamId,
                     include_appinfo: true,
+                    include_played_free_games: true,
                 },
             }
         );
